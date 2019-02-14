@@ -1,9 +1,12 @@
 const FollowToggle = require('./follow_toggle');
+const APIUtil = require('./api_util');
 
-$(function () {  
-  $buttons = $('.follow-toggle')
-  $buttons.each( (idx, button) => {
-    button = new FollowToggle(button);
-  })
+const followButtons = () => {
+  $(function () {  
+    $buttons = $('.follow-toggle')
+    $buttons.each( (idx, button) => {
+      button = new FollowToggle(button);
+    })
+})}
 
-});
+$(followButtons);

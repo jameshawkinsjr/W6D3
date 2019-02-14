@@ -1,3 +1,5 @@
+const APIUtil = require('./api_util');
+
 const FollowToggle = function(el) {
   let $el = $(el);
   this.userId = $el.data("user-id");
@@ -8,36 +10,31 @@ const FollowToggle = function(el) {
 
 FollowToggle.prototype.render = function($el) {
   $el.empty();
-  if (this.followState === false){
+  if (this.followState === "unfollowed"){
     let $buttonText = "Follow!"
     $el.append($buttonText)
-  } else if (this.followState === true) {
+  } else if (this.followState === "followed") {
     let $buttonText = "Unfollow!"
     $el.append($buttonText)
   };
 }
+
 
 FollowToggle.prototype.handleClick = function($el) {
   let that = this;
   let el2 = $el
   $el.on('click', function(clickEvent) {
     clickEvent.preventDefault();
-    if (that.followState === false){
-      $.ajax({
-        url: `/users/${that.userId}/follow`,
-        method: "POST",
-        dataType: "json"
-      });
-      that.followState = true;
-      that.render(el2);
-    } else if (that.followState === true){
-      $.ajax({
-        url: `/users/${that.userId}/follow`,
-        method: "DELETE",
-        dataType: "json"
-      });
-      that.followState = false;
-      that.render(el2);
+    if (that.followState === "unfollowed"){
+      APIUtil.followUser(that.userId).then(
+        that.render(el2)
+        )
+        that.followState = "followed";
+    } else if (that.followState === "followed"){
+      APIUtil.unfollowUser(that.userId).then(
+        that.render(el2)
+        )
+        that.followState = "unfollowed";
     }
   })
 };
